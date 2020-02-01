@@ -1,0 +1,18 @@
+  if(Controller1.ButtonL2.pressing()){
+      rate-=0.1;
+     if(rate <= 0.0)
+         rate = 0.0;
+      task::sleep(250);
+  }
+  if(Controller1.ButtonL1.pressing()){
+      rate+=0.1;
+      if(rate >= 1.0)
+          rate = 1.0;
+
+      task::sleep(250);
+      //task::sleep(25);
+  }
+
+    
+      double drivetrainLeftSideSpeed = ((Controller1.Axis3.position() + Controller1.Axis4.position())*rate);
+      double drivetrainRightSideSpeed = ((Controller1.Axis3.position() - Controller1.Axis4.position())*rate);

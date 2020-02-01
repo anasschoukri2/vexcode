@@ -6,20 +6,20 @@ using code = vision::code;
 
 // A global instance of brain used for printing to the V5 Brain screen
 brain  Brain;
-
+double rate=0.5;
 // VEXcode device constructors
-motor LeftDriveSmart = motor(PORT1, ratio18_1, false);
-motor RightDriveSmart = motor(PORT2, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 165, mm, 1);
+motor LeftDriveSmart = motor(PORT1, ratio36_1, false);
+motor RightDriveSmart = motor(PORT2, ratio36_1, true);
+drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 165, mm, 1);// to be modified 
 controller Controller1 = controller(primary);
-motor Motor3 = motor(PORT3, ratio36_1, false);
 motor Motor4 = motor(PORT4, ratio18_1, false);
+motor Motor2 = motor(PORT3, ratio18_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
 // define variables used for controlling motors based on controller inputs
-bool Controller1LeftShoulderControlMotorsStopped = true;
+bool Controller1RightShoulderControlMotorsStopped = true;
 bool Controller1UpDownButtonsControlMotorsStopped = true;
 bool DrivetrainNeedsToBeStopped_Controller1 = true;
 
@@ -32,8 +32,25 @@ int rc_auto_loop_callback_Controller1() {
       // calculate the drivetrain motor velocities from the controller joystick axies
       // left = Axis3 + Axis4
       // right = Axis3 - Axis4
-      int drivetrainLeftSideSpeed = Controller1.Axis3.position() + Controller1.Axis4.position();
-      int drivetrainRightSideSpeed = Controller1.Axis3.position() - Controller1.Axis4.position();
+
+     if(Controller1.ButtonL2.pressing()){
+      rate-=0.1;
+     if(rate <= 0.0)
+         rate = 0.0;
+      task::sleep(250);
+  }
+  if(Controller1.ButtonL1.pressing()){
+      rate+=0.1;
+      if(rate >= 1.0)
+          rate = 1.0;
+
+      task::sleep(250);
+      //task::sleep(25);
+  }
+
+    
+      double drivetrainLeftSideSpeed = ((Controller1.Axis3.position() + Controller1.Axis4.position())*rate);
+      double drivetrainRightSideSpeed = ((Controller1.Axis3.position() - Controller1.Axis4.position())*rate);
       // check if the values are inside of the deadband range
       if (abs(drivetrainLeftSideSpeed) < 5 && abs(drivetrainRightSideSpeed) < 5) {
         // check if the motors have already been stopped
@@ -58,17 +75,17 @@ int rc_auto_loop_callback_Controller1() {
         RightDriveSmart.setVelocity(drivetrainRightSideSpeed, percent);
         RightDriveSmart.spin(forward);
       }
-      // check the ButtonL1/ButtonL2 status to control Motor3
-      if (Controller1.ButtonL1.pressing()) {
-        Motor3.spin(forward);
-        Controller1LeftShoulderControlMotorsStopped = false;
-      } else if (Controller1.ButtonL2.pressing()) {
-        Motor3.spin(reverse);
-        Controller1LeftShoulderControlMotorsStopped = false;
-      } else if (!Controller1LeftShoulderControlMotorsStopped) {
-        Motor3.stop();
+      // check the ButtonR1/ButtonR2 status to control Motor2
+      if (Controller1.ButtonRight.pressing()) {
+        Motor2.spin(forward);
+        Controller1RightShoulderControlMotorsStopped = false;
+      } else if (Controller1.ButtonLeft.pressing()) {
+        Motor2.spin(reverse);
+        Controller1RightShoulderControlMotorsStopped = false;
+      } else if (!Controller1RightShoulderControlMotorsStopped) {
+        Motor2.stop();
         // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
-        Controller1LeftShoulderControlMotorsStopped = true;
+        Controller1RightShoulderControlMotorsStopped = true;
       }
       // check the Up/Down Buttons status to control Motor4
       if (Controller1.ButtonUp.pressing()) {

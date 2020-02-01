@@ -10,10 +10,10 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Drivetrain           drivetrain    1, 2            
+// Drivetrain           drivetrain    3, 16           
 // Controller1          controller                    
-// Motor3               motor         3               
 // Motor4               motor         4               
+// Motor2               motor         2               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -22,7 +22,7 @@
 
 using namespace vex;
 using namespace std;
-/*int timesPressed = 0;
+int timesPressed = 0;
 
 void heaven(){
     timesPressed++;//add one to timesPressed
@@ -36,22 +36,17 @@ void hell()
   Brain.Screen.clearScreen();
     Brain.Screen.printAt(20,20,"%d Allah akbar\n", timesPressed);
 }
-int main() {
-    Controller1.ButtonA.pressed(heaven);
-    Controller1.ButtonY.pressed(hell);
-    //every time Button A is pressed function() is run
+double speed=1;
 
-}*/
+
 
 int main() {
   
   
   vexcodeInit();
   
-  Motor3.spinFor(vex::forward, 20,degrees);
-  Motor3.setVelocity(10.0, percent );
   Motor4.spinFor(vex::forward, 20,degrees);
-  Motor4.setVelocity(10.0, percent );
+  Motor2.spinFor(vex::forward, 20,degrees);
   Drivetrain.driveFor(1,mm,0.1,rpm);
 
   
